@@ -45,6 +45,15 @@ if csv_file:
     f = open('out.csv', 'wb')
     output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Group","Group submission status","Grade","Maximum Grade","Last modified (grade)","Feedback comments"])
     output_file.writeheader()
+
+    points = {}
+    #file has to contain grade overrides by group 'A03': 0.3, 'A04': 0.5
+    inf = open('points.txt','r')
+    
+    if inf:
+        points = eval('{' + inf.read() + '}')
+        inf.close()
+        
     
     with zipfile.ZipFile('upload.zip', 'w') as myzip:    
         for row in input_file:
@@ -57,7 +66,7 @@ if csv_file:
                 dest = os.path.join(path, directory, dest_file)
                 shutil.copy2(source_file, dest)
                 myzip.write(dest, dest_file)
-                row['Grade'] = 1
+                row['Grade'] =  points[row['Group']] if row['Group'] in points else 1
             except IOError:
                 print "The '%s' file is missing for the student %s (%s)" % (source_file, row['Full name'], moodle_id)
             finally:
