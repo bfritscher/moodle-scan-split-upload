@@ -43,17 +43,27 @@ if csv_file:
     i = open(csv_file)
     input_file = csv.DictReader(i)
     f = open('out.csv', 'wb')
-    output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Group","Group submission status","Grade","Maximum Grade","Last modified (grade)","Feedback comments"])
+    
+    #output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Status","Group","Group submission status","Grade","Maximum Grade","Last modified (submission)","Last modified (grade)","Feedback comments"])
+    #output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Group","Group submission status","Grade","Maximum Grade","Last modified (grade)","Feedback comments"])
+    output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Status","Group","Grade","Maximum Grade","Grade can be changed","Last modified (grade)","Feedback comments"])
+
+    
     output_file.writeheader()
 
     points = {}
     #file has to contain grade overrides by group 'A03': 0.3, 'A04': 0.5
     inf = open('points.txt','r')
+    fcomments = open('comments.txt','r')
     
     if inf:
         points = eval('{' + inf.read() + '}')
         inf.close()
-        
+    
+    comments = {}
+    if fcomments:
+        comments = eval('{' + fcomments.read() + '}')
+        fcomments.close()    
     
     with zipfile.ZipFile('upload.zip', 'w') as myzip:    
         for row in input_file:
@@ -67,6 +77,8 @@ if csv_file:
                 shutil.copy2(source_file, dest)
                 myzip.write(dest, dest_file)
                 row['Grade'] =  points[row['Group']] if row['Group'] in points else 1
+                if row['Group'] in comments:
+                    row["Feedback comments"] = comments[row['Group']]
             except IOError:
                 print "The '%s' file is missing for the student %s (%s)" % (source_file, row['Full name'], moodle_id)
             finally:
