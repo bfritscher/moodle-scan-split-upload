@@ -72,6 +72,8 @@ if csv_file:
             #print "Etudiant %s dans groupe %s" % (moodle_id, moodle_group)
             source_file = "%s.pdf" % moodle_group
             dest_file = "%s_%s_assignsubmission_file_%s-%s.pdf" % (moodle_group, moodle_id, file_prefix, moodle_group)
+            if not os.path.isfile(source_file):
+                continue
             try:
                 dest = os.path.join(path, directory, dest_file)
                 shutil.copy2(source_file, dest)
