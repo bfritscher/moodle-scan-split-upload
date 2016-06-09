@@ -44,8 +44,11 @@ if csv_file:
     input_file = csv.DictReader(i)
     f = open('out.csv', 'wb')
     
+    #TODO PLEASE FIXME: automate output to match input
     #output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Status","Group","Group submission status","Grade","Maximum Grade","Last modified (submission)","Last modified (grade)","Feedback comments"])
     #output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Group","Group submission status","Grade","Maximum Grade","Last modified (grade)","Feedback comments"])
+    #output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Status","Group","Grade","Scale","Grade can be changed","Last modified (grade)","Feedback comments"])
+    #output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Status","Group","Grade","Maximum Grade","Grade can be changed","Last modified (submission)","Last modified (grade)","Feedback comments"])
     output_file = csv.DictWriter(f, fieldnames=["Identifier","Full name","Status","Group","Grade","Maximum Grade","Grade can be changed","Last modified (grade)","Feedback comments"])
 
     
@@ -69,7 +72,7 @@ if csv_file:
         for row in input_file:
             moodle_id = row['Identifier'][11:]
             moodle_group = row['Group']
-            #print "Etudiant %s dans groupe %s" % (moodle_id, moodle_group)
+            print "Etudiant %s dans groupe %s" % (moodle_id, moodle_group)
             source_file = "%s.pdf" % moodle_group
             dest_file = "%s_%s_assignsubmission_file_%s-%s.pdf" % (moodle_group, moodle_id, file_prefix, moodle_group)
             if not os.path.isfile(source_file):
